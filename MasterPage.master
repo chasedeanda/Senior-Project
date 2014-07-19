@@ -1,0 +1,115 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE>
+
+<head>
+    <%--Link JQuery libraries--%>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <%--declare favicon image--%>
+    <link rel="icon" type="image/png" href="images/faviconlogo.ico" />
+    <%--Link all stylesheets--%>
+    <link href="css/nav.style.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <%--Set page title--%>
+    <title>Taylor's Professional Services</title>
+
+    <script>
+        $(document).ready(function () {
+            <%--Dynamic nav logic--%>
+            $(window).bind('scroll', function () {
+                <%--Capture scroll position--%>
+                var scrollTop = $(this).scrollTop();
+                <%--if the page is scrolldown 70px then add class to #header and #nav elements--%>
+                if (scrollTop > 70) {
+                    $("#header").addClass('fixedHeader');
+                    $("#nav").addClass('fixednav');
+                }
+                <%--if the page is less than 70px scrolled then remove the fixed classes--%>
+                if (scrollTop < 70) {
+                    $("#header").removeClass('fixedHeader');
+                    $("#nav").removeClass('fixednav');
+                }
+
+            });
+        });
+	</script>
+    <%--head content holder--%>
+    <asp:ContentPlaceHolder id="head" runat="server">
+        
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="Form1" runat="server">
+        <%--needed to use updatepanel--%>
+        <asp:ScriptManager ID="ScriptManager1" AsyncPostBackTimeout="300" runat="server">
+        </asp:ScriptManager>
+        <div id="wrapper">
+            <div id="header">
+                <div id="header_container">
+                    <%--Loading spinner--%>
+                    <asp:UpdateProgress ID="updateprogress" runat="server">
+                        <ProgressTemplate>
+                            <div style="position: relative">
+                                <div class="masterspinner">
+                                    <img src="/Portal/images/portalspinner.gif" />
+                                </div>
+                            </div>
+                        </ProgressTemplate>
+                    </asp:UpdateProgress>
+                    <%--Nav begins--%>
+                    <div id="nav">
+                        <ul id="menu">
+                            <li><a href="#">Home</a> </li>
+                            <li><a href="#">Submit a Request</a> </li>
+                            <li><a href="#">My Profile</a></li>
+                            <li><a href="#">Find a Candidate</a></li>
+                            <li class="menu_right"><a href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="nav_background"></div>
+
+            <%--Main body div--%>
+            <div id="main_container">
+                <div id="main_content">
+                    <%--Body content holder--%>
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+            </div>
+
+            <%--Footer--%>
+            <div id="footer_bg_container">
+                <div id="footer_container">
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <%--Error handling for updatepanel--%>
+    <script type="text/javascript">
+        Sys.Application.add_load(AppLoad);
+        function AppLoad() {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequest);
+        }
+        function EndRequest(sender, args) {
+            // Check to see if there's an error on this request.
+            if (args.get_error() != undefined) {
+
+                var msg = args.get_error().message.replace("Sys.WebForms.PageRequestManagerServerErrorException: ", "");
+
+                // Show the custom error. 
+                // Here you can be creative and do whatever you want
+                // with the exception (i.e. call a modalpopup and show 
+                // a nicer error window). I will simply use 'alert'
+                alert(msg);
+
+                // Let the framework know that the error is handled, 
+                //  so it doesn't throw the JavaScript alert.
+                args.set_errorHandled(true);
+            }
+        }
+    </script>
+</body>
